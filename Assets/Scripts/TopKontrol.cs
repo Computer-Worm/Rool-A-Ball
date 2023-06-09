@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class TopKontrol : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Rigidbody rb;
+    public int Speed;
+
     void Start()
     {
-        transform.Translate(0, 0, 0.01f);
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(0, 0, 0.01f);
+        float yatayEksen = Input.GetAxis("Horizontal");
+        float dikeyEksen = Input.GetAxis("Vertical");
+
+        Vector3 vektor = new Vector3(yatayEksen, 0, dikeyEksen);
+
+        rb.AddForce(vektor * Speed);
+
     }
 }
