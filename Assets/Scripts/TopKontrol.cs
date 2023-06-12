@@ -22,4 +22,9 @@ public class TopKontrol : MonoBehaviour
         rb.AddForce(vektor * Speed);
 
     }
+    
+    void  OnTriggerEnter(Collider other)
+    {
+        other.gameObject.SetActive(false);
+    }
 }
