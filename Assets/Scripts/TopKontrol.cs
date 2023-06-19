@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class TopKontrol : MonoBehaviour
 {
     public Rigidbody rb;
+    Button btn;
     public int Speed;
     public float jumpSpeed;
 
@@ -16,54 +17,79 @@ public class TopKontrol : MonoBehaviour
     public Text puanText;
     public Text oyunBittiText;
 
-    public Button RestartButton;
+    public Button QuitButton;
+    public Button MenuButton;
+    public Button StartButton;
+
+    bool kontrol = false;
 
     [SerializeField] private AudioSource point;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        btn = StartButton.GetComponent<Button>();
+        btn.onClick.AddListener(StartBtn);
     }
 
     void FixedUpdate()
     {
-        float yatayEksen = Input.GetAxis("Horizontal");
-        float dikeyEksen = Input.GetAxis("Vertical");
-
-        Vector3 vektor = new Vector3(yatayEksen, 0, dikeyEksen);
-
-        rb.AddForce(vektor * Speed);
-
-        if (transform.position.y < 3.20)
+        if (kontrol == true)
         {
-            //Debug.Log("Sınır Aşıldı..");    
+            float yatayEksen = Input.GetAxis("Horizontal");
+            float dikeyEksen = Input.GetAxis("Vertical");
 
-            if (Input.GetKey(KeyCode.Space))
+            Vector3 vektor = new Vector3(yatayEksen, 0, dikeyEksen);
+
+            rb.AddForce(vektor * Speed);
+
+            if (transform.position.y < 3.20)
             {
-                rb.AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
+                //Debug.Log("Sınır Aşıldı..");    
+
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    rb.AddForce(new Vector3(0, jumpSpeed, 0), ForceMode.Impulse);
+                }
             }
         }
-
-
     }
     
     void  OnTriggerEnter(Collider other)
     {
-        other.gameObject.SetActive(false);
-        puan += 5;
-
-        puanText.text = "Puan: " + puan;
-        point.Play();
-
-        if (puan == objeSayisi)
+        if (kontrol == true)
         {
-            oyunBittiText.gameObject.SetActive(true);
-            RestartButton.gameObject.SetActive(true);
+            other.gameObject.SetActive(false);
+            puan += 5;
+
+            puanText.text = "Puan: " + puan;
+            point.Play();
+
+            if (puan == objeSayisi)
+            {
+                oyunBittiText.gameObject.SetActive(true);
+                MenuButton.gameObject.SetActive(true);
+                QuitButton.gameObject.SetActive(true);
+            }
         }
+
     }
 
-    public void RestartBtn()
+    public void StartBtn()
+    {
+        kontrol = true;
+        StartButton.gameObject.SetActive(false);
+        QuitButton.gameObject.SetActive(false);
+    }
+
+    public void MainMenuBtn()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void QuitBtn()
+    {
+        Debug.Log("Oyundan Çıkılıyor..");
+        Application.Quit();
     }
 }
